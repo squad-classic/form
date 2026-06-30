@@ -452,6 +452,83 @@
     line-height: 1.8;
   }
 
+
+  /* ========== FOOD DRIVE ========== */
+  .food-drive-label {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .food-drive-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .radio-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  .radio-card {
+    flex: 1;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .radio-card input[type="radio"] { display: none; }
+
+  .radio-card-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .radio-card input[type="radio"]:checked + .radio-card-inner {
+    border-color: var(--gold);
+    background: rgba(46,123,246,0.06);
+  }
+
+  .radio-dot {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    border: 1px solid var(--border-hi);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .radio-card input[type="radio"]:checked + .radio-card-inner .radio-dot {
+    border-color: var(--gold);
+  }
+
+  .radio-dot::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .radio-card input[type="radio"]:checked + .radio-card-inner .radio-dot::after {
+    opacity: 1;
+  }
+
 </style>
 </head>
 <body>
@@ -554,7 +631,21 @@
           <span class="amount-label">ご担当分の合計金額（目安）</span>
           <span class="amount-value" id="amount-preview">— 円</span>
         </div>
-        <label class="agree-row">
+        <div class="field">
+          <label class="food-drive-label">セカンドハーベスト（フードドライブ）のご協力<span class="req">*</span></label>
+          <p class="food-drive-desc">当日、フードドライブを実施予定です。ご協力いただける方には感謝の気持ちを込めてプレゼントをご用意しております。詳細は紹介者から別途ご案内いたします。</p>
+          <div class="radio-group">
+            <label class="radio-card">
+              <input type="radio" name="foodDrive" value="協力する" required>
+              <div class="radio-card-inner"><div class="radio-dot"></div>協力する</div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="foodDrive" value="協力しない">
+              <div class="radio-card-inner"><div class="radio-dot"></div>協力しない</div>
+            </label>
+          </div>
+        </div>
+                <label class="agree-row">
           <input type="checkbox" name="agree" required>
           <span class="custom-check"></span>
           <span class="agree-text">上記の注意事項をすべて確認し、同意します。</span>
@@ -643,7 +734,21 @@
           <span class="amount-label">チケット代金</span>
           <span class="amount-value">1,500 円</span>
         </div>
-        <label class="agree-row">
+        <div class="field">
+          <label class="food-drive-label">セカンドハーベスト（フードドライブ）のご協力<span class="req">*</span></label>
+          <p class="food-drive-desc">当日、フードドライブを実施予定です。ご協力いただける方には感謝の気持ちを込めてプレゼントをご用意しております。詳細は紹介者から別途ご案内いたします。</p>
+          <div class="radio-group">
+            <label class="radio-card">
+              <input type="radio" name="foodDrive" value="協力する" required>
+              <div class="radio-card-inner"><div class="radio-dot"></div>協力する</div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="foodDrive" value="協力しない">
+              <div class="radio-card-inner"><div class="radio-dot"></div>協力しない</div>
+            </label>
+          </div>
+        </div>
+                <label class="agree-row">
           <input type="checkbox" name="agree" required>
           <span class="custom-check"></span>
           <span class="agree-text">上記の注意事項をすべて確認し、同意します。</span>
