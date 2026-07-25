@@ -296,6 +296,31 @@
   .choice-btn.skip:hover { background: rgba(46,123,246,0.08); }
   .choice-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+    .lang-toggle {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .lang-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+  .lang-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #fff;
+  }
+  .lang-btn:hover:not(.active) { border-color: var(--gold); color: var(--gold); }
+
     .thanks-screen {
     text-align: center;
     padding: 60px 20px;
@@ -665,6 +690,8 @@
   const main = document.getElementById('main-content');
 
   function render() {
+    const langParam = new URLSearchParams(window.location.search).get('lang');
+    if (langParam === 'en') currentLang = 'en';
     if (type === 'member') renderMember();
     else if (type === 'guest') renderGuest();
     else renderError();
@@ -760,103 +787,71 @@
   }
 
   function renderGuest() {
-    document.title = 'SQUAD CLASSIC — ゲスト申込';
+    document.title = t('docTitle');
     main.innerHTML = `
+      <div class="lang-toggle">
+        <button class="lang-btn ${currentLang === 'ja' ? 'active' : ''}" onclick="switchLang('ja')">JP</button>
+        <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" onclick="switchLang('en')">EN</button>
+      </div>
       <span class="type-badge">Guest</span>
 
-      <div class="about-section">
-        <div class="about-header">
-          <span class="about-header-logo">SQU<span>AD</span></span>
-        </div>
-        <div class="about-body">
-          <p class="about-concept">持続的に、「健康的に」<br>理想の自分を目指すフィットネスチーム</p>
-          <p class="about-mission">SQUADは、仲間と共に健康的なボディメイクを追求するフィットネスコミュニティです。初心者から本気の挑戦者まで、一人ひとりの自己実現をサポートし、社会全体の健康意識向上に貢献することを目指しています。</p>
-          <div class="about-values">
-            <div class="value-item">
-              <p class="value-label">Bulk</p>
-              <p class="value-desc">筋肉・知識・経験を日々積み重ね、進化する</p>
-            </div>
-            <div class="value-item">
-              <p class="value-label">Wellness</p>
-              <p class="value-desc">健康的な体づくりと長期的な健康を追求する</p>
-            </div>
-            <div class="value-item">
-              <p class="value-label">With</p>
-              <p class="value-desc">仲間と支え合い、専門家と連携する共同体</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="purpose-section">
-        <p class="purpose-label">本大会について</p>
-        <p class="purpose-text">本大会は、健康的な体づくりを行うスクワッドの理念のもと、孤独な努力を共にというミッションを体現し、価値観を共有するメンバーのもと、健康にアプローチしているニュースキン製品を活用したボディメイク大会として開催されています。</p>
-      </div>
       <div class="privacy-block">
-        <p class="privacy-title">【個人情報の取り扱いについて】</p>
-        <p class="privacy-text">ご入力いただいた個人情報（氏名、メールアドレス等）は、本大会の運営、お問い合わせへの回答、および関連するイベントや製品に関する情報提供・ご案内のためにのみ利用いたします。法令に基づく場合を除き、ご本人の同意なく第三者に個人情報を提供することはありません。</p>
+        <p class="privacy-title">${t('privacyTitle')}</p>
+        <p class="privacy-text">${t('privacyText')}</p>
       </div>
       <div class="notice">
-        <p class="notice-title">注意事項</p>
+        <p class="notice-title">${t('noticeTitle')}</p>
         <ul>
-          <li class="important">本イベントは完全招待制です。招待者からの紹介が必要です。</li>
-          <li class="important">チケットの返金は一切お受けできません。申込後のキャンセルは不可となります。</li>
-          <li>チケット代金（1,500円）は、あなたを招待してくださった招待者に直接お送りください。</li>
-          <li>大会の方針により、会場が変更となる可能性がございます。あらかじめご了承ください。</li>
+          <li class="important">${t('notice1')}</li>
+          <li class="important">${t('notice2')}</li>
+          <li>${t('notice3')}</li>
+          <li>${t('notice4')}</li>
         </ul>
       </div>
       <form class="form-section" id="the-form" onsubmit="goToAfterparty(event,'guest')">
         <div class="field">
-          <label>お名前（フルネーム）<span class="req">*</span></label>
+          <label>${t('nameLabel')}<span class="req">*</span></label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div>
-              <input type="text" name="lastName" required placeholder="山田（姓）">
-            </div>
-            <div>
-              <input type="text" name="firstName" required placeholder="花子（名）">
-            </div>
+            <div><input type="text" name="lastName" required placeholder="${t('lastNamePh')}"></div>
+            <div><input type="text" name="firstName" required placeholder="${t('firstNamePh')}"></div>
           </div>
         </div>
         <div class="field">
-          <label>メールアドレス<span class="req">*</span></label>
+          <label>${t('emailLabel')}<span class="req">*</span></label>
           <input type="email" name="contact" required placeholder="example@mail.com">
         </div>
         <div class="field">
-          <label>招待者名（フルネーム）<span class="req">*</span></label>
+          <label>${t('referrerLabel')}<span class="req">*</span></label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div>
-              <input type="text" name="referrerLastName" required placeholder="鈴木（姓）">
-            </div>
-            <div>
-              <input type="text" name="referrerFirstName" required placeholder="一郎（名）">
-            </div>
+            <div><input type="text" name="referrerLastName" required placeholder="${t('referrerLastPh')}"></div>
+            <div><input type="text" name="referrerFirstName" required placeholder="${t('referrerFirstPh')}"></div>
           </div>
-          <span class="hint">※ あなたを招待してくださった招待者のお名前をご記入ください。</span>
+          <span class="hint">${t('referrerHint')}</span>
         </div>
         <div class="amount-preview">
-          <span class="amount-label">チケット代金</span>
-          <span class="amount-value">1,500 円</span>
+          <span class="amount-label">${t('ticketLabel')}</span>
+          <span class="amount-value">¥1,500</span>
         </div>
         <div class="field">
-          <label class="food-drive-label">セカンドハーベスト（フードドライブ）のご協力<span class="req">*</span></label>
-          <p class="food-drive-desc">当日、フードドライブを実施予定です。ご協力いただける方には感謝の気持ちを込めてプレゼントをご用意しております。詳細は紹介者から別途ご案内いたします。</p>
+          <label class="food-drive-label">${t('foodDriveLabel')}<span class="req">*</span></label>
+          <p class="food-drive-desc">${t('foodDriveDesc')}</p>
           <div class="radio-group">
             <label class="radio-card">
               <input type="radio" name="foodDrive" value="協力する" required>
-              <div class="radio-card-inner"><div class="radio-dot"></div>協力する</div>
+              <div class="radio-card-inner"><div class="radio-dot"></div>${t('foodDriveYes')}</div>
             </label>
             <label class="radio-card">
               <input type="radio" name="foodDrive" value="協力しない">
-              <div class="radio-card-inner"><div class="radio-dot"></div>協力しない</div>
+              <div class="radio-card-inner"><div class="radio-dot"></div>${t('foodDriveNo')}</div>
             </label>
           </div>
         </div>
-                <label class="agree-row">
+        <label class="agree-row">
           <input type="checkbox" name="agree" required>
           <span class="custom-check"></span>
-          <span class="agree-text">上記の注意事項をすべて確認し、同意します。</span>
+          <span class="agree-text">${t('agreeText')}</span>
         </label>
-        <button type="submit" class="submit-btn" id="submit-btn">次のページへ</button>
+        <button type="submit" class="submit-btn" id="submit-btn">${t('nextBtn')}</button>
         <div class="status-msg" id="status-msg"></div>
       </form>
     `;
@@ -879,7 +874,111 @@
     el.textContent = (!n || n < 1) ? '— 円' : (Math.min(n, 25) * 1500).toLocaleString('ja-JP') + ' 円';
   }
 
-  let _pendingForm = null;
+  const TRANSLATIONS = {
+    ja: {
+      docTitle: 'SQUAD CLASSIC — ゲスト申込',
+      privacyTitle: '【個人情報の取り扱いについて】',
+      privacyText: 'ご入力いただいた個人情報（氏名、メールアドレス等）は、本大会の運営、お問い合わせへの回答、および関連するイベントや製品に関する情報提供・ご案内のためにのみ利用いたします。法令に基づく場合を除き、ご本人の同意なく第三者に個人情報を提供することはありません。',
+      noticeTitle: '注意事項',
+      notice1: '本イベントは完全招待制です。招待者からの紹介が必要です。',
+      notice2: 'チケットの返金は一切お受けできません。申込後のキャンセルは不可となります。',
+      notice3: 'チケット代金（1,500円）は、あなたを招待してくださった招待者に直接お送りください。',
+      notice4: '大会の方針により、会場が変更となる可能性がございます。あらかじめご了承ください。',
+      nameLabel: 'お名前（フルネーム）',
+      lastNamePh: '山田（姓）',
+      firstNamePh: '花子（名）',
+      emailLabel: 'メールアドレス',
+      referrerLabel: '招待者名（フルネーム）',
+      referrerLastPh: '鈴木（姓）',
+      referrerFirstPh: '一郎（名）',
+      referrerHint: '※ あなたを招待してくださった招待者のお名前をご記入ください。',
+      ticketLabel: 'チケット代金',
+      foodDriveLabel: 'セカンドハーベスト（フードドライブ）のご協力',
+      foodDriveDesc: '当日、フードドライブを実施予定です。ご協力いただける方には感謝の気持ちを込めてプレゼントをご用意しております。詳細は紹介者から別途ご案内いたします。',
+      foodDriveYes: '協力する',
+      foodDriveNo: '協力しない',
+      agreeText: '上記の注意事項をすべて確認し、同意します。',
+      nextBtn: '次のページへ',
+      apHeading: '【選手を応援される皆様へ】',
+      apSubtitle: 'SQUAD CLASSIC アフターパーティーのご案内✉️',
+      apBody: '大会の感動と興奮が冷めやらぬまま、ぜひアフターパーティーで交流を楽しみませんか？<br>ボディメイク大会ではなかなか聞けないステージの裏側や、頑張った選手たちと直接言葉を交わせる貴重な機会です。<br><br>皆様の温かい応援が選手の支えです✨<br>この場を借りて、ぜひ皆様同士でも労い合い、ステージ・ボディメイクの情熱を分かち合いましょう！',
+      apPointsTitle: '■ お楽しみポイント',
+      apPoint1: '出場選手も参加！ステージの裏話が聞けるかも？',
+      apPoint2: '「抗酸化チェッカー」でご自身の健康状態をその場でチェック！',
+      apPoint3: '3,000円相当の景品をゲット！？コミットメントクジ開催！',
+      apDateLabel: '日時',
+      apDateValue: '8/8(土) 16:30-18:30',
+      apDateSub: 'クラシック終了後から入場可能✨',
+      apFeeLabel: '参加費',
+      apFeeValue: '1,500円',
+      apFeeSub: '（学生以下の方は無料）',
+      apVenueLabel: '会場',
+      apVenueValue: '横浜市中区末広町3-75 田辺ビル3階',
+      apMapLink: 'Google マップで開く →',
+      apJoinBtn: '参加する',
+      apSkipBtn: '参加しない',
+      thanksTitle: 'ご回答ありがとうございました。',
+      thanksBody: '申込内容を受け付けました。<br>今後の案内は登録いただいたメールアドレスにお送りします。<br>引き続きよろしくお願いいたします。',
+    },
+    en: {
+      docTitle: 'SQUAD CLASSIC — Guest Entry',
+      privacyTitle: '【Privacy Policy】',
+      privacyText: 'Personal information you provide (name, email address, etc.) will be used solely for event management, responding to inquiries, and providing information about related events and products. We will not share your personal information with third parties without your consent, except as required by law.',
+      noticeTitle: 'Important Notes',
+      notice1: 'This event is by invitation only. A referral from your inviter is required.',
+      notice2: 'Tickets are non-refundable. Cancellations after registration are not accepted.',
+      notice3: 'Please send the ticket fee (¥1,500) directly to the person who invited you.',
+      notice4: 'Please note that the venue may be subject to change due to event circumstances.',
+      nameLabel: 'Full Name',
+      lastNamePh: 'Last Name',
+      firstNamePh: 'First Name',
+      emailLabel: 'Email Address',
+      referrerLabel: 'Invited by (Full Name)',
+      referrerLastPh: 'Last Name',
+      referrerFirstPh: 'First Name',
+      referrerHint: '※ Please enter the full name of the person who invited you.',
+      ticketLabel: 'Ticket Fee',
+      foodDriveLabel: 'Second Harvest Food Drive',
+      foodDriveDesc: 'We will be holding a food drive on the day of the event. Participants who contribute will receive a special gift as our token of appreciation. Your inviter will share further details.',
+      foodDriveYes: "Yes, I'll contribute",
+      foodDriveNo: 'No, thank you',
+      agreeText: 'I have read and agree to all of the above terms.',
+      nextBtn: 'Next',
+      apHeading: 'To All Supporters',
+      apSubtitle: 'SQUAD CLASSIC After Party Invitation ✉️',
+      apBody: "Keep the excitement going after the competition! Join us at the SQUAD CLASSIC After Party, where you can connect with athletes and hear exclusive behind-the-scenes stories.<br><br>Your warm support means everything to the athletes ✨<br>Let's celebrate together and share our passion for fitness and bodybuilding!",
+      apPointsTitle: '■ Highlights',
+      apPoint1: 'Athletes join too — hear exclusive behind-the-scenes stories!',
+      apPoint2: 'Check your health with our antioxidant checker on the spot!',
+      apPoint3: 'Win prizes worth ¥3,000!? Join the commitment lottery!',
+      apDateLabel: 'Date & Time',
+      apDateValue: 'Aug 8 (Sat) 16:30–18:30',
+      apDateSub: 'Entry available after CLASSIC ends ✨',
+      apFeeLabel: 'Fee',
+      apFeeValue: '¥1,500',
+      apFeeSub: '(Free for students and under)',
+      apVenueLabel: 'Venue',
+      apVenueValue: '3F Tanabe Bldg., 3-75 Suehirocho, Naka-ku, Yokohama',
+      apMapLink: 'Open in Google Maps →',
+      apJoinBtn: "Join",
+      apSkipBtn: 'Skip',
+      thanksTitle: 'Thank you for your response!',
+      thanksBody: 'Your registration has been received.<br>We will send further updates to the email address you provided.<br>We look forward to seeing you!',
+    }
+  };
+
+  let currentLang = 'ja';
+
+  function t(key) {
+    return (TRANSLATIONS[currentLang] || TRANSLATIONS.ja)[key] || key;
+  }
+
+  function switchLang(lang) {
+    currentLang = lang;
+    renderGuest();
+  }
+
+    let _pendingForm = null;
 
   function goToAfterparty(e, formType) {
     e.preventDefault();
@@ -900,25 +999,25 @@
   function showAfterpartyPage() {
     main.innerHTML = `
       <div class="afterparty-section">
-        <p class="afterparty-heading">【選手を応援される皆様へ】</p>
-        <p class="afterparty-subtitle">SQUAD CLASSIC アフターパーティーのご案内✉️</p>
-        <p class="afterparty-body">大会の感動と興奮が冷めやらぬまま、ぜひアフターパーティーで交流を楽しみませんか？<br>ボディメイク大会ではなかなか聞けないステージの裏側や、頑張った選手たちと直接言葉を交わせる貴重な機会です。<br><br>皆様の温かい応援が選手の支えです✨<br>この場を借りて、ぜひ皆様同士でも労い合い、ステージ・ボディメイクの情熱を分かち合いましょう！</p>
-        <p class="afterparty-points-title">■ お楽しみポイント</p>
+        <p class="afterparty-heading">${t('apHeading')}</p>
+        <p class="afterparty-subtitle">${t('apSubtitle')}</p>
+        <p class="afterparty-body">${t('apBody')}</p>
+        <p class="afterparty-points-title">${t('apPointsTitle')}</p>
         <ul class="afterparty-points">
-          <li>出場選手も参加！ステージの裏話が聞けるかも？</li>
-          <li>「抗酸化チェッカー」でご自身の健康状態をその場でチェック！</li>
-          <li>3,000円相当の景品をゲット！？コミットメントクジ開催！</li>
+          <li>${t('apPoint1')}</li>
+          <li>${t('apPoint2')}</li>
+          <li>${t('apPoint3')}</li>
         </ul>
         <div class="afterparty-info">
-          <div class="afterparty-info-row"><span class="afterparty-info-icon">🕖</span><div><p class="afterparty-info-label">日時</p><p class="afterparty-info-value">8/8(土) 16:30-18:30<br><span class="afterparty-info-sub">クラシック終了後から入場可能✨</span></p></div></div>
-          <div class="afterparty-info-row"><span class="afterparty-info-icon">💰</span><div><p class="afterparty-info-label">参加費</p><p class="afterparty-info-value">1,500円<span class="afterparty-info-sub">（学生以下の方は無料）</span></p></div></div>
-          <div class="afterparty-info-row"><span class="afterparty-info-icon">📍</span><div><p class="afterparty-info-label">会場</p><p class="afterparty-info-value">横浜市中区末広町3-75 田辺ビル3階<br><a class="afterparty-map-link" href="https://maps.app.goo.gl/PPiWMmM2DgZ4QGPK8?g_st=ipc" target="_blank">Google マップで開く →</a></p></div></div>
+          <div class="afterparty-info-row"><span class="afterparty-info-icon">🕖</span><div><p class="afterparty-info-label">${t('apDateLabel')}</p><p class="afterparty-info-value">${t('apDateValue')}<br><span class="afterparty-info-sub">${t('apDateSub')}</span></p></div></div>
+          <div class="afterparty-info-row"><span class="afterparty-info-icon">💰</span><div><p class="afterparty-info-label">${t('apFeeLabel')}</p><p class="afterparty-info-value">${t('apFeeValue')}<span class="afterparty-info-sub">${t('apFeeSub')}</span></p></div></div>
+          <div class="afterparty-info-row"><span class="afterparty-info-icon">📍</span><div><p class="afterparty-info-label">${t('apVenueLabel')}</p><p class="afterparty-info-value">${t('apVenueValue')}<br><a class="afterparty-map-link" href="https://maps.app.goo.gl/PPiWMmM2DgZ4QGPK8?g_st=ipc" target="_blank">${t('apMapLink')}</a></p></div></div>
         </div>
         <img src="${AFTERPARTY_IMG}" alt="SQUAD CLASSIC AFTER PARTY" class="afterparty-flyer">
       </div>
       <div class="afterparty-choice-btns">
-        <button class="choice-btn join" onclick="submitForm('参加する')">参加する</button>
-        <button class="choice-btn skip" onclick="submitForm('参加しない')">参加しない</button>
+        <button class="choice-btn join" onclick="submitForm('参加する')">${t('apJoinBtn')}</button>
+        <button class="choice-btn skip" onclick="submitForm('参加しない')">${t('apSkipBtn')}</button>
       </div>
     `;
   }
@@ -977,16 +1076,14 @@
       </div>
     ` : '';
 
+    const thanksTitle = (formType === 'guest') ? t('thanksTitle') : 'ご回答ありがとうございました。';
+    const thanksBody  = (formType === 'guest') ? t('thanksBody')  : '申込内容を受け付けました。<br>今後の案内は登録いただいたメールアドレスにお送りします。<br>引き続きよろしくお願いいたします。';
     main.innerHTML = `
       <div class="thanks-screen">
         <div class="thanks-icon"></div>
-        <p class="thanks-title">ご回答ありがとうございました。</p>
+        <p class="thanks-title">${thanksTitle}</p>
         <div class="thanks-divider"></div>
-        <p class="thanks-body">
-          申込内容を受け付けました。<br>
-          今後の案内は登録いただいたメールアドレスにお送りします。<br>
-          引き続きよろしくお願いいたします。
-        </p>
+        <p class="thanks-body">${thanksBody}</p>
         ${guestBlock}
       </div>
     `;
